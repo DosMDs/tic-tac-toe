@@ -118,5 +118,4 @@ while True:
         make_move(x, y, player_mark)
     else:
         x, y = randint(0, FIELD_SIZE - 1), randint(0, FIELD_SIZE - 1)
-        if game_field[x][y] == "-":
-            make_move(x, y, enemy_mark)
+        make_move(x, y, enemy_mark)
