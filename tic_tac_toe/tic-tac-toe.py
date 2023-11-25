@@ -2,11 +2,13 @@ from random import getrandbits, randint
 from terminaltables import SingleTable
 
 FIELD_SIZE = 3
-INPUT_COORD_MESSAGE = "Введите номер строки и колонки своего хода через пробел: "
+INPUT_COORD_MESSAGE = "Введите номер строки и колонки своего хода " + \
+      "через пробел: "
+EMPTY_VALUE = "-"
 
 
 def get_game_field():
-    return [["-"] * FIELD_SIZE for _ in range(FIELD_SIZE)]
+    return [[EMPTY_VALUE] * FIELD_SIZE for _ in range(FIELD_SIZE)]
 
 
 def print_field():
@@ -43,6 +45,9 @@ def get_player_coord():
 
 
 def make_move(x, y, mark):
+    '''
+    Проеверяет ход и устанавливает в координаты метку ходящего
+    '''
     global player_move
     if (x, y) in moves:
         print("Ход уже был сделан ранее")
@@ -63,26 +68,24 @@ def game_finish():
         win_mark = ""
         # проверяю строки
         for row in game_field:
-            if len(set(row)) == 1 and row[0] != "-":
-                win_mark = row[0]
+            r_value = set(row)
+            if len(r_value) == 1 and EMPTY_VALUE not in r_value:
+                win_mark = r_value.pop()
                 break
         # проверяю колонки
         for col in range(FIELD_SIZE):
-            if len({row[col] for row in game_field}) == 1 and game_field[col][0] != "-":
-                win_mark = game_field[col][0]
+            c_value = {row[col] for row in game_field}
+            if len(c_value) == 1 and EMPTY_VALUE not in c_value:
+                win_mark = c_value.pop()
                 break
         # проверка главной диагонали
-        if (
-            len({game_field[i][i] for i in range(FIELD_SIZE)}) == 1
-            and game_field[0][0] != "-"
-        ):
-            win_mark = game_field[0][0]
+        base = {game_field[i][i] for i in range(FIELD_SIZE)}
+        if len(base) == 1 and EMPTY_VALUE not in base:
+            win_mark = base.pop()
         # проверка побочной диагонали
-        if (
-            len({game_field[i][FIELD_SIZE - i - 1] for i in range(FIELD_SIZE)}) == 1
-            and game_field[0][FIELD_SIZE - 1] != "-"
-        ):
-            win_mark = game_field[0][FIELD_SIZE - 1]
+        side = {game_field[i][FIELD_SIZE - i - 1] for i in range(FIELD_SIZE)}
+        if len(side) == 1 and EMPTY_VALUE not in side:
+            win_mark = side.pop()
 
         if win_mark == "":
             return False
@@ -90,6 +93,7 @@ def game_finish():
             print("Игрок выиграл")
         else:
             print("Компьютер выиграл")
+        print_field()
 
         return True
 
