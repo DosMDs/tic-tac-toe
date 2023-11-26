@@ -98,7 +98,8 @@ class TicTacToe:
         Проеверяет ход и устанавливает в координаты метку ходящего
         """
         if (x, y) in self.moves:
-            print("Ход уже был сделан ранее")
+            if self.player_move:
+                print("Ход уже был сделан ранее")
             return
         self.game_field[x][y] = mark
         self.player_move = not self.player_move
